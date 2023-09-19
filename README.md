@@ -1,2 +1,2 @@
-# trab_lp
+# Jogo Mastermind
 Trabalho de Linguagem de Programação
