@@ -1,13 +1,10 @@
-import System.Random
+-- import System.Random
 
+-- main :: IO ()
+-- main = do
+--    gen <- newStdGen
+--    let (numeroAleatorio, _) = randomR (0, 9) gen :: (Int, StdGen)
+--    print numeroAleatorio
 
-gera = do
-    gen <- newStdGen
-    let cs = randomRs ('0', '9') gen :: [Char]
-    return (take 1 cs)
-    
-main :: IO ()
-main = do
-   a <- gera
-   print a
-   
+inverteSaida tentativa [] = []
+inverteSaida tentativa (x:xs) = tentativa !! x : (inverteSaida tentativa xs)

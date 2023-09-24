@@ -5,11 +5,25 @@ import System.Random
 digitos = ['1','2','3','4','5','6','7','8','9','0']
 -- opcoes = ['s', 'S', 'n', 'N']
 
-rand = do
+randCarater = do
     gen <- newStdGen
     let cs = randomRs ('0', '9') gen :: [Char]
     return (head cs)
 
+randPositions = auxRandPositions []
+auxRandPositions acc
+    | length acc == 4 = return acc
+    | otherwise = do
+        gen <- newStdGen
+        let (n, ngen) = randomR (0, 3) gen :: (Int, StdGen)
+        let novoAcc = n : acc
+        if find n acc == -1
+            then auxRandPositions novoAcc
+        else
+            auxRandPositions acc
+
+inverteSaida tentativa [] = []
+inverteSaida tentativa (x:xs) = tentativa !! x : (inverteSaida tentativa xs)
 
 find e xs = findAux e xs 0
 findAux e [] _ = -1
@@ -22,13 +36,13 @@ geraSegredo repetidos = auxGeraSegredo [] repetidos
 auxGeraSegredo segredo repetidos
     | length segredo == 4 = return segredo
     | otherwise = do
-        seg <- rand
-        let s = seg : segredo
+        seg <- randCarater
         if repetidos == 1
             then auxGeraSegredo (seg : segredo) repetidos
         else if find seg segredo == -1
             then auxGeraSegredo (seg : segredo) repetidos
         else auxGeraSegredo segredo repetidos
+
 
 comparaSegredoEntrada entrada segredo = auxCompara entrada segredo [] 0
 auxCompara [] _ resposta _ = resposta
@@ -49,6 +63,7 @@ perguntaSegredo tentativas segredo
         tentativaSegredo <- adivinhaSegredo tentativas segredo
         if segredo /= tentativaSegredo
             then do
+                -- let saida = inverteSaida (comparaSegredoEntrada tentativaSegredo segredo) randPositions
                 putStrLn $ "Resposta: " ++ (comparaSegredoEntrada tentativaSegredo segredo)
                 perguntaSegredo (tentativas - 1) segredo
             else putStrLn "Jogador 2 adivinhou o segredo corretamente!"
