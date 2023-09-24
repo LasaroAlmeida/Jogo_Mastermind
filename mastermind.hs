@@ -26,25 +26,6 @@ auxCompara (x:xs) segredo resposta i =
         else 
             auxCompara xs segredo (resposta ++ "-") (i+1)
 
-find1 e (x:xs) = findAux e (x:xs) 0
-
-findAux _ _ 4 = -1
-findAux e (x:xs) i = if e == x 
-                        then i
-                    else
-                        findAux e xs (i+1)
-
---segredo tentativa
-comparaSegredoEntrada (x:xs) (y:ys) = do 
-    let resposta = ""
-    let index1 = find x (y:ys)
-
-    if index1/=(-1)
-        then resposta++"X"
-    else
-        resposta++"-"
-    return resposta;
-
 perguntaSegredo tentativas segredo
     | tentativas <= 0 = putStrLn "Jogador 2 perdeu. O segredo não foi adivinhado."
     | otherwise = do
