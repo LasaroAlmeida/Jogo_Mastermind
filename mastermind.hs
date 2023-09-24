@@ -47,7 +47,7 @@ validaCaracteresEntrada (x:xs) =  if find x digitos then validaCaracteresEntrada
 main:: IO ()
 main = do
     putStrLn "====================================================================================="
-    putStrLn "|------------------------------ MASTERMIND -----------------------------------------|"
+    putStrLn "|--------------------------------- MASTERMIND --------------------------------------|"
     putStrLn "====================================================================================="
     let msgInicio = "Jogador 1, informe o segredo (digitos de 0 a 9, totalizando 4 digitos)"
     segredo <- (validaTamanhoEntrada msgInicio)
