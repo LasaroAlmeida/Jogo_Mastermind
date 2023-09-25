@@ -3,7 +3,6 @@
 import System.Random
 
 digitos = ['1','2','3','4','5','6','7','8','9','0']
--- opcoes = ['s', 'S', 'n', 'N']
 
 randCarater = do
     gen <- newStdGen
@@ -11,6 +10,7 @@ randCarater = do
     return (head cs)
 
 randPositions = auxRandPositions []
+
 auxRandPositions acc
     | length acc == 4 = return acc
     | otherwise = do
@@ -24,6 +24,8 @@ auxRandPositions acc
 
 inverteSaida tentativa [] = []
 inverteSaida tentativa (x:xs) = tentativa !! x : (inverteSaida tentativa xs)
+
+
 
 find e xs = findAux e xs 0
 findAux e [] _ = -1
@@ -63,8 +65,9 @@ perguntaSegredo tentativas segredo
         tentativaSegredo <- adivinhaSegredo tentativas segredo
         if segredo /= tentativaSegredo
             then do
-                -- let saida = inverteSaida (comparaSegredoEntrada tentativaSegredo segredo) randPositions
-                putStrLn $ "Resposta: " ++ (comparaSegredoEntrada tentativaSegredo segredo)
+                posicoes <- randPositions
+                let saida = inverteSaida (comparaSegredoEntrada tentativaSegredo segredo) posicoes
+                putStrLn $ "Resposta: " ++ saida ++ (show posicoes)
                 perguntaSegredo (tentativas - 1) segredo
             else putStrLn "Jogador 2 adivinhou o segredo corretamente!"
 
