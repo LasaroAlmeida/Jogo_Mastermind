@@ -3,15 +3,14 @@
 import System.Random
 
 digitos = ['1','2','3','4','5','6','7','8','9','0']
--- opcoes = ['s', 'S', 'n', 'N']
 
 randCarater = do
     gen <- newStdGen
     let cs = randomRs ('0', '9') gen :: [Char]
     return (head cs)
 
-
 randPositions = auxRandPositions []
+
 auxRandPositions acc
     | length acc == 4 = return acc
     | otherwise = do
@@ -24,7 +23,9 @@ auxRandPositions acc
             auxRandPositions acc
 
 inverteSaida tentativa [] = []
-inverteSaida tentativa (x:xs) = (tentativa !! x) : (inverteSaida tentativa xs)
+inverteSaida tentativa (x:xs) = tentativa !! x : (inverteSaida tentativa xs)
+
+
 
 
 find e xs = findAux e xs 0
@@ -46,17 +47,21 @@ auxGeraSegredo segredo repetidos
         else auxGeraSegredo segredo repetidos
 
 
-comparaSegredoEntrada entrada segredo = auxCompara entrada segredo [] 0
-auxCompara [] _ resposta _ = resposta
-auxCompara (x:xs) segredo resposta i =
+comparaSegredoEntrada entrada segredo (x:xs) = auxCompara entrada segredo (x:xs) 0
+auxCompara [] _ resposta _ _ = resposta
+auxCompara (x:xs) segredo resposta (y:ys) i =
     let indice = (find x segredo)
     in
     if indice == i 
         then auxCompara xs segredo (resposta ++ "O") (i+1)
-    else if indice == (-1) 
-            then auxCompara xs segredo (resposta ++ "X") (i+1)
-        else 
-            auxCompara xs segredo (resposta ++ "-") (i+1)
+    -- else if indice == (-1) 
+    --         then auxCompara xs segredo (resposta ++ "X") (i+1)
+    --     else 
+    --         auxCompara xs segredo (resposta ++ "-") (i+1)
+    else
+        auxCompara xs segredo resposta  (i+1)
+
+
 
 perguntaSegredo tentativas segredo
     | tentativas <= 0 = putStrLn $ "Você perdeu! O segredo era: " ++ segredo
@@ -64,9 +69,12 @@ perguntaSegredo tentativas segredo
         tentativaSegredo <- adivinhaSegredo tentativas segredo
         if segredo /= tentativaSegredo
             then do
-                list <- randPositions
-                let saida = inverteSaida (comparaSegredoEntrada tentativaSegredo segredo) list
-                putStrLn $ "Resposta: " ++ saida
+                posicoes <- randPositions
+                let entrada = (comparaSegredoEntrada tentativaSegredo segredo [])
+                let meio = (comparaSegredoEntrada tentativaSegredo segredo entrada)
+                let fim = (comparaSegredoEntrada tentativaSegredo segredo meio)
+                let saida = inverteSaida fim posicoes
+                putStrLn $ "Resposta: " ++ saida ++ (show posicoes)
                 perguntaSegredo (tentativas - 1) segredo
             else putStrLn "Jogador 2 adivinhou o segredo corretamente!"
 
