@@ -10,6 +10,7 @@ randCarater = do
     let cs = randomRs ('0', '9') gen :: [Char]
     return (head cs)
 
+
 randPositions = auxRandPositions []
 auxRandPositions acc
     | length acc == 4 = return acc
@@ -23,7 +24,8 @@ auxRandPositions acc
             auxRandPositions acc
 
 inverteSaida tentativa [] = []
-inverteSaida tentativa (x:xs) = tentativa !! x : (inverteSaida tentativa xs)
+inverteSaida tentativa (x:xs) = (tentativa !! x) : (inverteSaida tentativa xs)
+
 
 find e xs = findAux e xs 0
 findAux e [] _ = -1
@@ -62,8 +64,9 @@ perguntaSegredo tentativas segredo
         tentativaSegredo <- adivinhaSegredo tentativas segredo
         if segredo /= tentativaSegredo
             then do
-                -- let saida = inverteSaida (comparaSegredoEntrada tentativaSegredo segredo) randPositions
-                putStrLn $ "Resposta: " ++ (comparaSegredoEntrada tentativaSegredo segredo)
+                list <- randPositions
+                let saida = inverteSaida (comparaSegredoEntrada tentativaSegredo segredo) list
+                putStrLn $ "Resposta: " ++ saida
                 perguntaSegredo (tentativas - 1) segredo
             else putStrLn "Jogador 2 adivinhou o segredo corretamente!"
 
