@@ -137,6 +137,6 @@ main = do
     putStrLn "====================================================================================="
     let msgInicio = "Jogar com números repetidos? \n (S ou N)"
     repetidos <- validaEntrada msgInicio
-    segredo <- eraSegredo repetidos
+    segredo <- geraSegredo repetidos
     putStrLn "É hora do Jogador 2 tentar adivinhar"
     perguntaSegredo 8 segredo
