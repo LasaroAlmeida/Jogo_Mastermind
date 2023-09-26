@@ -25,8 +25,16 @@ auxRandPositions acc
 inverteSaida tentativa [] = []
 inverteSaida tentativa (x:xs) = tentativa !! x : (inverteSaida tentativa xs)
 
+trocaIndice e i lista
+  | i >= (length lista) = lista
+  | otherwise = auxTrocaIndice e i lista 0
 
-
+auxTrocaIndice  e i (x:xs) j
+  | length (x:xs) <= 0 = []
+  | otherwise =
+    if i == j
+      then e : xs
+    else x : (auxTrocaIndice e i xs (j+1))
 
 find e xs = findAux e xs 0
 findAux e [] _ = -1
@@ -47,19 +55,29 @@ auxGeraSegredo segredo repetidos
         else auxGeraSegredo segredo repetidos
 
 
-comparaSegredoEntrada entrada segredo (x:xs) = auxCompara entrada segredo (x:xs) 0
-auxCompara [] _ resposta _ _ = resposta
-auxCompara (x:xs) segredo resposta (y:ys) i =
-    let indice = (find x segredo)
-    in
-    if indice == i 
-        then auxCompara xs segredo (resposta ++ "O") (i+1)
-    -- else if indice == (-1) 
-    --         then auxCompara xs segredo (resposta ++ "X") (i+1)
-    --     else 
-    --         auxCompara xs segredo (resposta ++ "-") (i+1)
+comparaSegredoEntrada entrada segredo = auxCompara entrada segredo entrada 0
+auxCompara [] segredo resposta _ = comparaSegredoFim segredo resposta
+auxCompara (x:xs) segredo resposta i =
+
+    if (segredo !! i) ==  (resposta !! i)
+        then 
+            auxCompara xs (trocaIndice 'O' i segredo) (trocaIndice 'O' i resposta) (i+1)
     else
-        auxCompara xs segredo resposta  (i+1)
+        auxCompara xs segredo resposta (i+1)
+
+comparaSegredoFim entrada segredo = auxComparaSegredoFim entrada segredo entrada 0
+
+auxComparaSegredoFim [] _ resposta _ = resposta
+auxComparaSegredoFim (x:xs) segredo resposta i =
+    if x == 'O'
+        then auxComparaSegredoFim xs segredo resposta (i+1)
+    else
+        let indice = (find x segredo)
+        in
+            if indice /= (-1)
+                then auxComparaSegredoFim xs segredo (trocaIndice '-' i resposta) (i+1)
+            else
+                auxComparaSegredoFim xs segredo (trocaIndice 'X' i resposta) (i+1)
 
 
 
@@ -70,10 +88,8 @@ perguntaSegredo tentativas segredo
         if segredo /= tentativaSegredo
             then do
                 posicoes <- randPositions
-                let entrada = (comparaSegredoEntrada tentativaSegredo segredo [])
-                let meio = (comparaSegredoEntrada tentativaSegredo segredo entrada)
-                let fim = (comparaSegredoEntrada tentativaSegredo segredo meio)
-                let saida = inverteSaida fim posicoes
+                let trocaCorretos = (comparaSegredoEntrada tentativaSegredo segredo)
+                let saida = inverteSaida trocaCorretos posicoes
                 putStrLn $ "Resposta: " ++ saida ++ (show posicoes)
                 perguntaSegredo (tentativas - 1) segredo
             else putStrLn "Jogador 2 adivinhou o segredo corretamente!"
@@ -121,7 +137,6 @@ main = do
     putStrLn "====================================================================================="
     let msgInicio = "Jogar com números repetidos? \n (S ou N)"
     repetidos <- validaEntrada msgInicio
-    segredo <- geraSegredo repetidos
+    segredo <- eraSegredo repetidos
     putStrLn "É hora do Jogador 2 tentar adivinhar"
     perguntaSegredo 8 segredo
-
