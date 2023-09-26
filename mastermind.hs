@@ -75,7 +75,7 @@ auxComparaSegredoFim (x:xs) segredo resposta i =
         let indice = (find x segredo)
         in
             if indice /= (-1)
-                then auxComparaSegredoFim xs segredo (trocaIndice '-' i resposta) (i+1)
+                then auxComparaSegredoFim xs (trocaIndice '-' indice segredo) (trocaIndice '-' i resposta) (i+1)
             else
                 auxComparaSegredoFim xs segredo (trocaIndice 'X' i resposta) (i+1)
 
@@ -137,6 +137,6 @@ main = do
     putStrLn "====================================================================================="
     let msgInicio = "Jogar com números repetidos? \n (S ou N)"
     repetidos <- validaEntrada msgInicio
-    segredo <- eraSegredo repetidos
+    segredo <- geraSegredo repetidos
     putStrLn "É hora do Jogador 2 tentar adivinhar"
     perguntaSegredo 8 segredo
